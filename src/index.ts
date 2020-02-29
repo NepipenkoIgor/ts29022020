@@ -1,20 +1,18 @@
-interface IFact {
-    factId: number;
-    useTo: string;
-    userId: number;
+let anyType: any = 3;
+anyType.a = 1;
+anyType['a'] = 1;
+anyType = 1;
+anyType();
+
+let unknownType: unknown = {};
+unknownType.a = 1;
+unknownType['a'] = 1;
+unknownType = 1;
+unknownType();
+
+
+let voidType: void = undefined;
+
+function myAlert(): void {
+
 }
-
-const dataList: { action: string, data: IFact }[] = [];
-
-const uniqueValue = (): keyof IFact => {
-    return 'factId';
-}
-
-dataList.map((item) => {
-    if (item.data[uniqueValue()] === 2) {
-        //...;
-    }
-    return item;
-})
-let isValid: true = false;
-let num: IFact['factId']
