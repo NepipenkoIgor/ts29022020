@@ -1,37 +1,20 @@
-// interface/type/class/function
+// T extends U ? X : U
 
-type Info = { email: string, password: string };
-
-interface Person<GeneralInfo extends Info = Info , Id = number> {
-    id: Id,
-    name: string,
-    info: GeneralInfo
-}
-
-const admin: Person<Info> = {
-    id: 1,
-    name: 'Ihor',
-    info: {
-        email: 'a@a',
-        password: '123123'
-    }
-}
-
-const user: Person<Info & { male: boolean }> = {
-    id: 1,
-    name: 'Oleg',
-    info: {
-        male: true,
-        email: 'a@a',
-        password: '123123'
-    }
-}
+type nonUndefined<T> = T extends (undefined | null) ? never : T;
+type snbu = string | number | null | undefined;
+const a: nonUndefined<snbu> = undefined;
 
 
-function getProperty<T, K extends keyof  T>(obj: T, key: K) {
-    return obj[key];
-}
-// keyof  T => 'name' | 'age'
-const myKey = 'age';
-getProperty({name: 'Ihor', age: 33}, myKey);
+// Type of first element of typle array
+const arr1: [() => boolean, string];
+const arr2: [() => number[], number];
 
+type FirstElType<T> =
+    T extends [unknown, infer C, ...unknown[]]
+        ? C  // extends (...args: any[]) => infer R ? R : never
+        : never
+
+
+const b: number = 's';
+
+let a: Exclude<any, any>
