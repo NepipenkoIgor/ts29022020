@@ -29,13 +29,17 @@ interface IFact {
     userId: number;
 }
 
-const dataList: { action: string, data: IFact }[] = [];
+interface Action {
+    action: string;
+    data: IFact;
+};
+const dataList: Action[] = [];
 
 const uniqueValue = (): keyof IFact => {
     return 'factId';
 }
 
-dataList.map((item) => {
+dataList.map((item: Action) => {
     if (item.data[uniqueValue()] === 2) {
         //...;
     }
