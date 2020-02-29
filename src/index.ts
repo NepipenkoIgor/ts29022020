@@ -1,20 +1,37 @@
-// T extends U ? X : U
+type NonReadonly<T> = {
+    -readonly [P in keyof T]-?: T[P]
+}
 
-type nonUndefined<T> = T extends (undefined | null) ? never : T;
-type snbu = string | number | null | undefined;
-const a: nonUndefined<snbu> = undefined;
+type account = {
+    readonly firstName: string;
+    readonly age: number;
+}
+
+let person: NonReadonly<account> = {
+    firstName: 'Ihor',
+}
+
+type Person = {
+    readonly name: string;
+    age: number;
+    info: {
+        male: boolean;
+    }
+}
+
+let p1: Partial<Person> = {
+    age: 22
+}
 
 
-// Type of first element of typle array
-const arr1: [() => boolean, string];
-const arr2: [() => number[], number];
+type RemoveByType<T, E> = {
+    [P in keyof T]: T[P] extends E ? never : P
+}[keyof T]
 
-type FirstElType<T> =
-    T extends [unknown, infer C, ...unknown[]]
-        ? C  // extends (...args: any[]) => infer R ? R : never
-        : never
-
-
-const b: number = 's';
+const p: RemoveByType<Person, string | number> = 1;
 
 let a: Exclude<any, any>
+
+
+type Point = { x: number, y: number }
+const a: Point[keyof Point] = 'asd'
