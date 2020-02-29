@@ -1,65 +1,37 @@
-/***Object/Function*/
-//
-// interface IUser {
-//     firstName: string;
-//     age: number;
-// }
-//
-// type User = {
-//     firstName: string;
-//     age: number;
-// }
-//
-// interface IGetUser {
-//     (): string;
-// }
-//
-// type GetUser = () => string;
-//
-// let fn: IGetUser = () => {
-//     return 'string';
-// }
+// interface/type/class/function
 
+type Info = { email: string, password: string };
 
-/****** Extend ***/
-
-interface IPartialPoint {
-   readonly x?: { a: string };
-}
-interface IPartialPoint {
-    y: { a: string };
+interface Person<GeneralInfo extends Info = Info , Id = number> {
+    id: Id,
+    name: string,
+    info: GeneralInfo
 }
 
-type  PartialPoint = {
-    x: { a: number, b: number };
+const admin: Person<Info> = {
+    id: 1,
+    name: 'Ihor',
+    info: {
+        email: 'a@a',
+        password: '123123'
+    }
 }
 
-type Point = {
-    y: number;
-}
-// & IPartialPoint & PartialPoint;
-
-interface IPoint extends PartialPoint {
-    y: number;
+const user: Person<Info & { male: boolean }> = {
+    id: 1,
+    name: 'Oleg',
+    info: {
+        male: true,
+        email: 'a@a',
+        password: '123123'
+    }
 }
 
 
-const point: Point = {
-    x: {
-        a: 's',
-        b: 1
-    },
-    y: 2,
+function getProperty<T, K extends keyof  T>(obj: T, key: K) {
+    return obj[key];
 }
-
-type animation = 'ease-in' | 'ease-out';
-
-/***** implements **/
-class CustomPoint implements IPartialPoint, Point {
-    x = {
-        a: 's',
-        b: 1
-    };
-    y =  2;
-}
+// keyof  T => 'name' | 'age'
+const myKey = 'age';
+getProperty({name: 'Ihor', age: 33}, myKey);
 
