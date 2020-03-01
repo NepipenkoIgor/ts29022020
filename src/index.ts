@@ -1,10 +1,18 @@
-interface IPoint {
-    x: number;
+type Constructable = new (...args: any[]) => {}
 
-    sum(): number;
+function TimeStamped<BaseClass extends Constructable>(BC: BaseClass) {
+    return class extends BC {
+        public timestamp = new Date();
+    }
 }
 
-class Point implements IPoint {
+function Tagged<BaseClass extends Constructable>(BC: BaseClass) {
+    return class extends BC {
+        public tags = ['ts', 'angular', 'js'];
+    }
+}
+
+class Point {
 
     #d: number;
 
@@ -20,16 +28,13 @@ class Point implements IPoint {
         return this.x + this.y + this.z + this.#d;
     }
 }
+class CustomPoint extends TimeStamped(Tagged(Point)) {
 
-class CustomPoint extends Point implements IPoint {
-    constructor(x: number, y: number, z: number) {
-        super(x, y, z);
-    }
-
-    public sum(): number {
-        return super.sum();
-    }
 }
 
-const p = new Point(1, 2, 3);
+const p = new CustomPoint(1, 2, 3);
+console.log(p.tags);
+console.log(p.timestamp);
+console.log((p as any).#d);
+
 
