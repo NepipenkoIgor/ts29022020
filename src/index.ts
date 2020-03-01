@@ -1,61 +1,35 @@
-class Search {
-    public constructor(private  el: HTMLInputElement) {
-        this.el.addEventListener('input', this.onSearch.bind(this))
+import 'reflect-metadata';
 
-    }
-
-    @debounce(300)
-    //@logErrorToSentry
-    private onSearch(this: this, _e: Event) {
-        console.log(this)
-        // throw new Error('some error')
-        ///const value = (e.target as HTMLInputElement).value;
-
-    }
-}
-
-
-const input = document.querySelector('input') as HTMLInputElement;
-new Search(input);
-
-
-function debounce<T>(ms: number) {
-    let timeId: number | null;
-    return function (_target: T, _key: string, descriptor: PropertyDescriptor): void {
-        const originalValue = descriptor.value;
-        descriptor.value = function (this: T, ...args: any[]) {
-            if (timeId) {
-                clearTimeout(timeId)
+function checkTypeInRuntime(target: any, key: string): void {
+    const {name: type}: { name: string } = Reflect.getMetadata('design:type', target, key)
+    let val: any;
+    Object.defineProperty(target, key, {
+        get(): any {
+            return val;
+        },
+        set(v: any): void {
+            const actualType = typeof v;
+            if (actualType !== type.toLowerCase()) {
+                throw new Error(`type of ${key} is not ${type}. You tried to set ${actualType}`)
             }
-            timeId = setTimeout(() => {
-                originalValue.call(this, ...args);
-            }, ms)
+            val = v;
         }
-        // return {
-        //     ...descriptor,
-        //     value: function (this: T, ...args: any[]) {
-        //         if (timeId) {
-        //             clearTimeout(timeId)
-        //         }
-        //         timeId = setTimeout(() => {
-        //             originalValue.call(this, ...args);
-        //         }, ms)
-        //     }
-        // }
-    }
+    })
 }
 
-// function logErrorToSentry(_target: any, _key: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-//     const originalValue = descriptor.value;
-//     return {
-//         ...descriptor,
-//         value: (...args: any[]) => {
-//             try {
-//                 originalValue(...args);
-//             } catch (err) {
-//                 console.log(err)
-//                 // http to sentry service
-//             }
-//         }
-//     }
-// }
+class User {
+    @checkTypeInRuntime
+    public firstName!: string;
+}
+
+const user = new User();
+user.firstName = 'Ihor';
+setTimeout(() => {
+    try {
+        (user.firstName as any) = 123;
+    } catch {
+        console.log(user.firstName)
+    }
+
+
+}, 5000)
