@@ -1,34 +1,37 @@
-abstract class AbstractFormControl<Model> {
-    public abstract model: Model;
+function persistance(target: any, key: string): void {
+    let _value = target [key];
+    const localStorageKey = `${target.constructor.name}_${key}`;
 
-    public focus(): void {
-
+    const getter = () => {
+        const value = localStorage.getItem(localStorageKey) || _value;
+        console.log(`Get ${key} => ${value}`)
+        return value;
     }
 
-    public blur(): void {
-
+    const setter = (newValue: string) => {
+        console.log(`Set ${key} => ${newValue}`)
+        _value = newValue;
+        localStorage.setItem(localStorageKey, newValue)
     }
 
-    public abstract updateModel(_model: Model): void;
-}
-
-class Input extends AbstractFormControl<string> {
-    public model: string = '';
-
-    public updateModel(_model: string): void {
-        console.log(_model);
-    }
-}
-
-interface IDropDownModel {
-    text: string,
-    value: string
+    Object.defineProperty(target, key, {
+        get: getter,
+        set: setter,
+        enumerable: true,
+        configurable: true,
+    })
 };
 
-class DropDown extends AbstractFormControl<IDropDownModel[]> {
-    public model: IDropDownModel [] = [];
 
-    public updateModel(_model: IDropDownModel []): void {
-        console.log(_model);
-    }
+class Account {
+    @persistance
+    public firstName!: string;
 }
+
+const user = new Account();
+
+console.log(user.firstName);
+user.firstName = 'Oleg';
+setTimeout(()=>{
+    user.firstName = 'Vlad';
+}, 5000)
