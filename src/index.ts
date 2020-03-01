@@ -1,40 +1,34 @@
-type Constructable = new (...args: any[]) => {}
+abstract class AbstractFormControl<Model> {
+    public abstract model: Model;
 
-function TimeStamped<BaseClass extends Constructable>(BC: BaseClass) {
-    return class extends BC {
-        public timestamp = new Date();
+    public focus(): void {
+
+    }
+
+    public blur(): void {
+
+    }
+
+    public abstract updateModel(_model: Model): void;
+}
+
+class Input extends AbstractFormControl<string> {
+    public model: string = '';
+
+    public updateModel(_model: string): void {
+        console.log(_model);
     }
 }
 
-function Tagged<BaseClass extends Constructable>(BC: BaseClass) {
-    return class extends BC {
-        public tags = ['ts', 'angular', 'js'];
+interface IDropDownModel {
+    text: string,
+    value: string
+};
+
+class DropDown extends AbstractFormControl<IDropDownModel[]> {
+    public model: IDropDownModel [] = [];
+
+    public updateModel(_model: IDropDownModel []): void {
+        console.log(_model);
     }
 }
-
-class Point {
-
-    #d: number;
-
-    public constructor(
-        public x: number,
-        protected y: number,
-        private z: number
-    ) {
-        this.#d = 1;
-    }
-
-    public sum(): number {
-        return this.x + this.y + this.z + this.#d;
-    }
-}
-class CustomPoint extends TimeStamped(Tagged(Point)) {
-
-}
-
-const p = new CustomPoint(1, 2, 3);
-console.log(p.tags);
-console.log(p.timestamp);
-console.log((p as any).#d);
-
-
